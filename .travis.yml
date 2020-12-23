@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t kingofcph/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run kingofcph/react-test npm test -- -- coverage
+
+after_success:
+  - docker build -t kingofcph/multi-client ./client
+  - docker build -t kingofcph/multi-nginx ./nginx
+  - docker build -t kingofcph/multi-server ./server
+  - docker build -t kingofcph/multi-worker ./worker
+
+# log in to the Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# Tag images, og push dem til DockerHub
+  - docker push kingofcph/multi-client
+  - docker push kingofcph/multi-nginx
+  - docker push kingofcph/multi-server
+  - docker push kingofcph/multi-worker
