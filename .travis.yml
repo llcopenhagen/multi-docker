@@ -8,6 +8,9 @@ before_install:
 script:
   - docker run -e CI=true ballayo/docker-react npm run test
 #  - docker run kingofcph/react-test npm test -- -- coverage
+#
+#
+#
 
 after_success:
   - docker build -t kingofcph/multi-client ./client
